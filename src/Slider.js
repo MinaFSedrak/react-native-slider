@@ -515,7 +515,7 @@ export default class Slider extends PureComponent {
 
 var defaultStyles = StyleSheet.create({
   container: {
-    height: 40,
+    height: 200,
     justifyContent: 'center',
   },
   track: {
