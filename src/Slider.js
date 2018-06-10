@@ -11,7 +11,9 @@ import {
   PanResponder,
   View,
   Easing,
-  ViewPropTypes
+  ViewPropTypes,
+  Text,
+  Platform
 } from "react-native";
 
 import PropTypes from 'prop-types';
@@ -167,6 +169,17 @@ export default class Slider extends PureComponent {
      * Used to configure the animation parameters.  These are the same parameters in the Animated library.
      */
     animationConfig : PropTypes.object,
+    
+    /**
+     * If true the user will be able to seee the slider text value.
+     * Default value is false.
+     */
+    isValueText: PropTypes.bool,
+
+    /**
+     * The color used for the thumb.
+     */
+    valueMeasureType: PropTypes.string
   };
 
   static defaultProps = {
@@ -179,7 +192,8 @@ export default class Slider extends PureComponent {
     thumbTintColor: '#343434',
     thumbTouchSize: {width: 40, height: 40},
     debugTouchArea: false,
-    animationType: 'timing'
+    animationType: 'timing',
+    isValueText: false
   };
 
   state = {
@@ -232,6 +246,8 @@ export default class Slider extends PureComponent {
       thumbTouchSize,
       animationType,
       animateTransitions,
+      isValueText,
+      valueMeasureType,
       ...other
     } = this.props;
     var {value, containerSize, trackSize, thumbSize, allMeasured} = this.state;
@@ -287,6 +303,9 @@ export default class Slider extends PureComponent {
           {...this._panResponder.panHandlers}>
           {debugTouchArea === true && this._renderDebugThumbTouchRect(thumbLeft)}
         </View>
+    
+        {this._renderValueText(thumbLeft)}
+
       </View>
     );
   };
@@ -511,6 +530,31 @@ export default class Slider extends PureComponent {
 
     return <Image source={thumbImage} />;
   };
+
+
+  _renderValueText = (thumbLeft) => {
+    var { isValueText, valueMeasureType } = this.props;
+    var textValue;
+    let value = Math.round(this.state.value._value);
+
+    if (!isValueText) return;
+
+    if (valueMeasureType) {
+      textValue = value + ' ' + valueMeasureType;
+    } else {
+      textValue = value;
+    }
+
+    return (
+        <Animated.View style={[
+          defaultStyles.valueTextContainer,
+          { transform: [{ translateX: thumbLeft }, { translateY: 0 }] }
+        ]}
+        >
+          <Text style={defaultStyles.valueText}>{textValue}</Text>
+        </Animated.View>
+    );
+  }
 }
 
 var defaultStyles = StyleSheet.create({
@@ -540,5 +584,17 @@ var defaultStyles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: 'green',
     opacity: 0.5,
+  },
+  valueTextContainer: {
+    width: 200,
+    position: 'absolute',
+    bottom: 20,
+    left: -100,
+    alignItems: 'center'
+  },
+  valueText: {
+    textAlign: 'center',
+    color: '#4A4A4A',
+    fontSize: 25
   }
 });
