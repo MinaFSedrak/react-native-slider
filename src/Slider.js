@@ -177,7 +177,7 @@ export default class Slider extends PureComponent {
     isValueText: PropTypes.bool,
 
     /**
-     * The color used for the thumb.
+     * The Measure Type adding to current value textView.
      */
     valueMeasureType: PropTypes.string
   };
