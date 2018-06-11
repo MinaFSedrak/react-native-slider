@@ -179,7 +179,19 @@ export default class Slider extends PureComponent {
     /**
      * The Measure Type adding to current value textView.
      */
-    valueMeasureType: PropTypes.string
+    valueMeasureType: PropTypes.string,
+    
+    /**
+     * If true the user will be able to seee the slider minimum value.
+     * Default value is false.
+     */
+    isMinimumTextView: PropTypes.bool,
+
+    /**
+     * If true the user will be able to seee the slider maximum value.
+     * Default value is false.
+     */
+    isMaximumTextView: PropTypes.bool
   };
 
   static defaultProps = {
@@ -193,7 +205,9 @@ export default class Slider extends PureComponent {
     thumbTouchSize: {width: 40, height: 40},
     debugTouchArea: false,
     animationType: 'timing',
-    isValueTextView: false
+    isValueTextView: false,
+    isMinimumTextView: false,
+    isMaximumTextView: false
   };
 
   state = {
@@ -248,6 +262,8 @@ export default class Slider extends PureComponent {
       animateTransitions,
       isValueTextView,
       valueMeasureType,
+      isMinimumTextView,
+      isMaximumTextView,
       ...other
     } = this.props;
     var {value, containerSize, trackSize, thumbSize, allMeasured} = this.state;
@@ -304,8 +320,10 @@ export default class Slider extends PureComponent {
           {debugTouchArea === true && this._renderDebugThumbTouchRect(thumbLeft)}
         </View>
     
+        {this._renderMinimumTextView()}
         {this._renderValueTextView(thumbLeft)}
-
+        {this._renderMaximumTextView()}
+    
       </View>
     );
   };
@@ -555,6 +573,27 @@ export default class Slider extends PureComponent {
         </Animated.View>
     );
   }
+  
+   _renderMinimumTextView = () => {
+    var { isMinimumTextView } = this.props;
+
+    if (!isMinimumTextView) return;
+
+    return (
+      <Text style={[defaultStyles.minMaxTextView, { left: 0 }]}>{this.props.minimumValue}</Text>
+    );
+
+  }
+
+  _renderMaximumTextView = () => {
+    var { isMaximumTextView } = this.props;
+
+    if (!isMaximumTextView) return;
+
+    return (
+      <Text style={[defaultStyles.minMaxTextView, { right: 0 }]}>{this.props.maximumValue}</Text>
+    );
+  }
 }
 
 var defaultStyles = StyleSheet.create({
@@ -596,5 +635,12 @@ var defaultStyles = StyleSheet.create({
     textAlign: 'center',
     color: '#4A4A4A',
     fontSize: 25
+  },
+  minMaxTextView: {
+    fontSize: 10,
+    color: '#4A4A4A',
+    backgroundColor: 'white',
+    position: 'absolute',
+    bottom: 45
   }
 });
