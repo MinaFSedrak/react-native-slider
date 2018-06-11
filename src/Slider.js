@@ -174,7 +174,7 @@ export default class Slider extends PureComponent {
      * If true the user will be able to seee the slider text value.
      * Default value is false.
      */
-    isValueText: PropTypes.bool,
+    isValueTextView: PropTypes.bool,
 
     /**
      * The Measure Type adding to current value textView.
@@ -193,7 +193,7 @@ export default class Slider extends PureComponent {
     thumbTouchSize: {width: 40, height: 40},
     debugTouchArea: false,
     animationType: 'timing',
-    isValueText: false
+    isValueTextView: false
   };
 
   state = {
@@ -246,7 +246,7 @@ export default class Slider extends PureComponent {
       thumbTouchSize,
       animationType,
       animateTransitions,
-      isValueText,
+      isValueTextView,
       valueMeasureType,
       ...other
     } = this.props;
@@ -304,7 +304,7 @@ export default class Slider extends PureComponent {
           {debugTouchArea === true && this._renderDebugThumbTouchRect(thumbLeft)}
         </View>
     
-        {this._renderValueText(thumbLeft)}
+        {this._renderValueTextView(thumbLeft)}
 
       </View>
     );
@@ -532,12 +532,12 @@ export default class Slider extends PureComponent {
   };
 
 
-  _renderValueText = (thumbLeft) => {
-    var { isValueText, valueMeasureType } = this.props;
+  _renderValueTextView = (thumbLeft) => {
+    var { isValueTextView, valueMeasureType } = this.props;
     var textValue;
     let value = Math.round(this.state.value._value);
 
-    if (!isValueText) return;
+    if (!isValueTextView) return;
 
     if (valueMeasureType) {
       textValue = value + ' ' + valueMeasureType;
@@ -551,7 +551,7 @@ export default class Slider extends PureComponent {
           { transform: [{ translateX: thumbLeft }, { translateY: 0 }] }
         ]}
         >
-          <Text style={defaultStyles.valueText}>{textValue}</Text>
+          <Text style={defaultStyles.valueTextView}>{textValue}</Text>
         </Animated.View>
     );
   }
@@ -592,7 +592,7 @@ var defaultStyles = StyleSheet.create({
     left: -100,
     alignItems: 'center'
   },
-  valueText: {
+  valueTextView: {
     textAlign: 'center',
     color: '#4A4A4A',
     fontSize: 25
