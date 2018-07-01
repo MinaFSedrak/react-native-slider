@@ -553,7 +553,7 @@ export default class Slider extends PureComponent {
   _renderValueTextView = (thumbLeft) => {
     var { isValueTextView, valueMeasureType } = this.props;
     var textValue;
-    let value = Math.round(this.state.value._value);
+    let value = Number(this.state.value._value).toFixed(2);
 
     if (!isValueTextView) return;
 
