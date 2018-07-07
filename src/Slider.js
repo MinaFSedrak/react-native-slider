@@ -30,9 +30,9 @@ function Rect(x, y, width, height) {
 
 Rect.prototype.containsPoint = function(x, y) {
   return (x >= this.x
-          && y >= this.y
-          && x <= this.x + this.width
-          && y <= this.y + this.height);
+    && y >= this.y
+    && x <= this.x + this.width
+    && y <= this.y + this.height);
 };
 
 var DEFAULT_ANIMATION_CONFIGS = {
@@ -169,7 +169,7 @@ export default class Slider extends PureComponent {
      * Used to configure the animation parameters.  These are the same parameters in the Animated library.
      */
     animationConfig : PropTypes.object,
-    
+
     /**
      * If true the user will be able to seee the slider text value.
      * Default value is false.
@@ -180,7 +180,7 @@ export default class Slider extends PureComponent {
      * The Measure Type adding to current value textView.
      */
     valueMeasureType: PropTypes.string,
-    
+
     /**
      * If true the user will be able to seee the slider minimum value.
      * Default value is false.
@@ -191,7 +191,11 @@ export default class Slider extends PureComponent {
      * If true the user will be able to seee the slider maximum value.
      * Default value is false.
      */
-    isMaximumTextView: PropTypes.bool
+    isMaximumTextView: PropTypes.bool,
+
+    minimumValueText: PropTypes.string,
+
+    maximumValueText: PropTypes.string,
   };
 
   static defaultProps = {
@@ -264,9 +268,11 @@ export default class Slider extends PureComponent {
       valueMeasureType,
       isMinimumTextView,
       isMaximumTextView,
+      minimumValueText,
+      maximumValueText,
       ...other
     } = this.props;
-    var {value, containerSize, trackSize, thumbSize, allMeasured} = this.state;
+    var { value, containerSize, trackSize, thumbSize, allMeasured } = this.state;
     var mainStyles = styles || defaultStyles;
     var thumbLeft = value.interpolate({
       inputRange: [minimumValue, maximumValue],
@@ -319,11 +325,11 @@ export default class Slider extends PureComponent {
           {...this._panResponder.panHandlers}>
           {debugTouchArea === true && this._renderDebugThumbTouchRect(thumbLeft)}
         </View>
-    
+
         {this._renderMinimumTextView()}
         {this._renderValueTextView(thumbLeft)}
         {this._renderMaximumTextView()}
-    
+
       </View>
     );
   };
@@ -564,34 +570,34 @@ export default class Slider extends PureComponent {
     }
 
     return (
-        <Animated.View style={[
-          defaultStyles.valueTextContainer,
-          { transform: [{ translateX: thumbLeft }, { translateY: 0 }] }
-        ]}
-        >
-          <Text style={defaultStyles.valueTextView}>{textValue}</Text>
-        </Animated.View>
+      <Animated.View style={[
+        defaultStyles.valueTextContainer,
+        { transform: [{ translateX: thumbLeft }, { translateY: 0 }] }
+      ]}
+      >
+        <Text style={defaultStyles.valueTextView}>{textValue}</Text>
+      </Animated.View>
     );
   }
-  
-   _renderMinimumTextView = () => {
-    var { isMinimumTextView } = this.props;
+
+  _renderMinimumTextView = () => {
+    var { isMinimumTextView, minimumValueText, minimumValue } = this.props;
 
     if (!isMinimumTextView) return;
 
     return (
-      <Text style={[defaultStyles.minMaxTextView, { left: 0 }]}>{this.props.minimumValue}</Text>
+      <Text style={[defaultStyles.minMaxTextView, { left: 0 }]}>{minimumValueText ? minimumValueText : minimumValue}</Text>
     );
 
   }
 
   _renderMaximumTextView = () => {
-    var { isMaximumTextView } = this.props;
+    var { isMaximumTextView, maximumValueText, maximumValue } = this.props;
 
     if (!isMaximumTextView) return;
 
     return (
-      <Text style={[defaultStyles.minMaxTextView, { right: 0 }]}>{this.props.maximumValue}</Text>
+      <Text style={[defaultStyles.minMaxTextView, { right: 0 }]}>{maximumValueText ? maximumValueText : maximumValue}</Text>
     );
   }
 }
