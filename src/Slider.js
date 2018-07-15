@@ -62,6 +62,16 @@ export default class Slider extends PureComponent {
      * the value, the component won't be reset to its inital value.
      */
     value: PropTypes.number,
+    
+    /**
+     * Initial secondValue of the slider. The value should be between minimumValue
+     * and maximumValue, which default to 0 and 1 respectively.
+     * Default value is 0.
+     *
+     * *This is not a controlled component*, e.g. if you don't update
+     * the value, the component won't be reset to its inital value.
+     */
+    secondValue: PropTypes.Number,
 
     /**
      * If true the user won't be able to move the slider.
@@ -180,6 +190,17 @@ export default class Slider extends PureComponent {
      * The Measure Type adding to current value textView.
      */
     valueMeasureType: PropTypes.string,
+    
+    /**
+     * If true the user will be able to seee the slider text second value.
+     * Default value is false.
+     */
+    isSecondValueTextView: PropTypes.bool,
+    
+    /**
+    * The Measure Type adding to current second value textView.
+    */
+    secondValueMeasureType: PropTypes.string,
 
     /**
      * If true the user will be able to seee the slider minimum value.
@@ -200,6 +221,7 @@ export default class Slider extends PureComponent {
 
   static defaultProps = {
     value: 0,
+    secondValue: 0,
     minimumValue: 0,
     maximumValue: 1,
     step: 0,
@@ -210,6 +232,7 @@ export default class Slider extends PureComponent {
     debugTouchArea: false,
     animationType: 'timing',
     isValueTextView: false,
+    isSecondValueTextView: false,
     isMinimumTextView: false,
     isMaximumTextView: false
   };
@@ -220,6 +243,7 @@ export default class Slider extends PureComponent {
     thumbSize: {width: 0, height: 0},
     allMeasured: false,
     value: new Animated.Value(this.props.value),
+    secondValue: new Animated.Value(this.props.secondValue)
   };
 
   componentWillMount() {
@@ -236,6 +260,15 @@ export default class Slider extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     var newValue = nextProps.value;
+    var newSecondValue = nextProps.secondValue;
+
+    if (this.props.secondValue !== newSecondValue) {
+      if (this.props.animateTransitions) {
+        this._setCurrentSecondValueAnimated(newSecondValue);
+      } else {
+        this._setCurrentSecondValue(newSecondValue);
+      }
+    }
 
     if (this.props.value !== newValue) {
       if (this.props.animateTransitions) {
@@ -266,15 +299,22 @@ export default class Slider extends PureComponent {
       animateTransitions,
       isValueTextView,
       valueMeasureType,
+      isSecondValueTextView,
+      secondValueMeasureType,
       isMinimumTextView,
       isMaximumTextView,
       minimumValueText,
       maximumValueText,
       ...other
     } = this.props;
-    var { value, containerSize, trackSize, thumbSize, allMeasured } = this.state;
+    var { value, secondValue, containerSize, trackSize, thumbSize, allMeasured } = this.state;
     var mainStyles = styles || defaultStyles;
     var thumbLeft = value.interpolate({
+      inputRange: [minimumValue, maximumValue],
+      outputRange: [0, containerSize.width - thumbSize.width],
+      //extrapolate: 'clamp',
+    });
+    var secondThumbLeft = secondValue.interpolate({
       inputRange: [minimumValue, maximumValue],
       outputRange: [0, containerSize.width - thumbSize.width],
       //extrapolate: 'clamp',
@@ -319,6 +359,23 @@ export default class Slider extends PureComponent {
         >
           {this._renderThumbImage()}
         </Animated.View>
+        <Animated.View
+          onLayout={this._measureThumb}
+          renderToHardwareTextureAndroid={true}
+          style={[
+            {backgroundColor: thumbTintColor},
+            mainStyles.thumb, thumbStyle,
+            {
+              transform: [
+                { translateX: secondThumbLeft },
+                { translateY: 0 }
+              ],
+              ...valueVisibleStyle
+            }
+          ]}
+        >
+          {this._renderThumbImage()}
+        </Animated.View>
         <View
           renderToHardwareTextureAndroid={true}
           style={[defaultStyles.touchArea, touchOverflowStyle]}
@@ -328,6 +385,7 @@ export default class Slider extends PureComponent {
 
         {this._renderMinimumTextView()}
         {this._renderValueTextView(thumbLeft)}
+        {this._renderSecondValueTextView(secondThumbLeft)}
         {this._renderMaximumTextView()}
 
       </View>
@@ -454,8 +512,16 @@ export default class Slider extends PureComponent {
     return this.state.value.__getValue();
   };
 
+  _getCurrentSecondValue = () => {
+    return this.state.secondValue.__getValue();
+  };
+
   _setCurrentValue = (value: number) => {
     this.state.value.setValue(value);
+  };
+
+  _setCurrentSecondValue = (value: number) => {
+    this.state.secondValue.setValue(value);
   };
 
   _setCurrentValueAnimated = (value: number) => {
@@ -468,6 +534,18 @@ export default class Slider extends PureComponent {
     );
 
     Animated[animationType](this.state.value, animationConfig).start();
+  };
+
+  _setCurrentSecondValueAnimated = (secondValue: number) => {
+    var animationType = this.props.animationType;
+    var animationConfig = Object.assign(
+      {},
+      DEFAULT_ANIMATION_CONFIGS[animationType],
+      this.props.animationConfig,
+      { toValue: secondValue }
+    );
+
+    Animated[animationType](this.state.secondValue, animationConfig).start();
   };
 
   _fireChangeEvent = (event) => {
@@ -579,6 +657,30 @@ export default class Slider extends PureComponent {
       </Animated.View>
     );
   }
+  
+  _renderSecondValueTextView = (secondThumbLeft) => {
+    var { isSecondValueTextView, secondValueMeasureType } = this.props;
+    var textValue;
+    let value = Number(this.state.secondValue._value).toFixed(2);
+
+    if (!isSecondValueTextView) return;
+
+    if (secondValueMeasureType) {
+      textValue = value + ' ' + secondValueMeasureType;
+    } else {
+      textValue = value;
+    }
+
+    return (
+      <Animated.View style={[
+        defaultStyles.secondValueTextContainer,
+        { transform: [{ translateX: secondThumbLeft }, { translateY: 0 }] }
+      ]}
+      >
+        <Text style={defaultStyles.valueTextView}>{textValue}</Text>
+      </Animated.View>
+    );
+  }
 
   _renderMinimumTextView = () => {
     var { isMinimumTextView, minimumValueText, minimumValue } = this.props;
@@ -634,6 +736,13 @@ var defaultStyles = StyleSheet.create({
     width: 200,
     position: 'absolute',
     bottom: 20,
+    left: -100,
+    alignItems: 'center'
+  },
+  secondValueTextContainer: {
+    width: 200,
+    position: 'absolute',
+    top: 20,
     left: -100,
     alignItems: 'center'
   },
