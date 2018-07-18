@@ -738,14 +738,14 @@ var defaultStyles = StyleSheet.create({
   valueTextContainer: {
     width: 200,
     position: 'absolute',
-    top: 20,
+    top: 10,
     left: -100,
     alignItems: 'center'
   },
   secondValueTextContainer: {
     width: 200,
     position: 'absolute',
-    bottom: 20,
+    bottom: 0,
     left: -100,
     alignItems: 'center'
   },
