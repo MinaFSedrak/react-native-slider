@@ -221,7 +221,7 @@ export default class Slider extends PureComponent {
 
   static defaultProps = {
     value: 0,
-    secondValue: 0,
+    secondValue: null,
     minimumValue: 0,
     maximumValue: 1,
     step: 0,
