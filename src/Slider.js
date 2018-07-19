@@ -270,7 +270,7 @@ export default class Slider extends PureComponent {
       }
     }
 
-    if (this.props.value !== newValue) {
+    if (this.state.value !== newValue) {
       if (this.props.animateTransitions) {
         this._setCurrentValueAnimated(newValue);
       }
