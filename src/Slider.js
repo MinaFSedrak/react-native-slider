@@ -342,23 +342,26 @@ export default class Slider extends PureComponent {
         <Animated.View
           renderToHardwareTextureAndroid={true}
           style={[mainStyles.track, trackStyle, minimumTrackStyle]} />
-        <Animated.View
-          onLayout={this._measureThumb}
-          renderToHardwareTextureAndroid={true}
-          style={[
-            {backgroundColor: thumbTintColor},
-            mainStyles.thumb, thumbStyle,
-            {
-              transform: [
-                { translateX: thumbLeft },
-                { translateY: 0 }
-              ],
-              ...valueVisibleStyle
-            }
-          ]}
-        >
-          {this._renderThumbImage()}
-        </Animated.View>
+        {(value._value != null) ?
+          <Animated.View
+            onLayout={this._measureThumb}
+            renderToHardwareTextureAndroid={true}
+            style={[
+              {backgroundColor: thumbTintColor},
+              mainStyles.thumb, thumbStyle,
+              {
+                transform: [
+                  { translateX: thumbLeft },
+                  { translateY: 0 }
+                ],
+                ...valueVisibleStyle
+              }
+            ]}
+          >
+            {this._renderThumbImage()}
+          </Animated.View>
+          : null
+        }
         {(secondValue._value != null) ?
           <Animated.View
             onLayout={this._measureThumb}
