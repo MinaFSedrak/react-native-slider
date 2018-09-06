@@ -642,7 +642,7 @@ export default class Slider extends PureComponent {
 
     if (!thumbImage) return;
 
-    return style={defaultStyles.thumbImageStyle} <Image source={thumbImage} />;
+    return <Image style={defaultStyles.thumbImageStyle} source={thumbImage} />;
   };
 
  _renderSecondThumbImage = () => {
