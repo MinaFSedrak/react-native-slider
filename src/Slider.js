@@ -161,6 +161,11 @@ export default class Slider extends PureComponent {
     thumbImage: Image.propTypes.source,
 
     /**
+     * Sets an image for the second thumb.
+     */
+    secondThumbImage: Image.propTypes.source,
+    
+    /**
      * Set this to true to visually see the thumb touch rect in green.
      */
     debugTouchArea: PropTypes.bool,
@@ -288,6 +293,7 @@ export default class Slider extends PureComponent {
       maximumTrackTintColor,
       thumbTintColor,
       thumbImage,
+      secondThumbImage,
       styles,
       style,
       trackStyle,
@@ -378,7 +384,7 @@ export default class Slider extends PureComponent {
               }
             ]}
           >
-            {this._renderThumbImage()}
+            {this._renderSecondThumbImage()}
           </Animated.View>
           : null
         }
@@ -636,7 +642,15 @@ export default class Slider extends PureComponent {
 
     if (!thumbImage) return;
 
-    return <Image source={thumbImage} />;
+    return style={defaultStyles.thumbImageStyle} <Image source={thumbImage} />;
+  };
+
+ _renderSecondThumbImage = () => {
+    var { secondThumbImage } = this.props;
+
+    if (!secondThumbImage) return;
+
+    return <Image style={defaultStyles.thumbImageStyle} source={secondThumbImage} />;
   };
 
 
@@ -763,5 +777,9 @@ var defaultStyles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'absolute',
     bottom: 45
+  },
+  thumbImageStyle: {
+    height: 95,
+    width: 2
   }
 });
