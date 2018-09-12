@@ -656,16 +656,8 @@ export default class Slider extends PureComponent {
 
   _renderValueTextView = (thumbLeft) => {
     var { isValueTextView, valueMeasureType } = this.props;
-    var textValue;
-    let value = Number(this.state.value._value).toFixed(2);
 
     if (!isValueTextView) return;
-
-    if (valueMeasureType) {
-      textValue = value + ' ' + valueMeasureType;
-    } else {
-      textValue = value;
-    }
 
     return (
       <Animated.View style={[
@@ -673,23 +665,15 @@ export default class Slider extends PureComponent {
         { transform: [{ translateX: thumbLeft }, { translateY: 0 }] }
       ]}
       >
-        <Text style={defaultStyles.valueTextView}>{textValue}</Text>
+        <Text style={defaultStyles.valueTextView}>{valueMeasureType}</Text>
       </Animated.View>
     );
   }
   
   _renderSecondValueTextView = (secondThumbLeft) => {
     var { isSecondValueTextView, secondValueMeasureType } = this.props;
-    var textValue;
-    let value = Number(this.state.secondValue._value).toFixed(2);
-
+    
     if (!isSecondValueTextView) return;
-
-    if (secondValueMeasureType) {
-      textValue = value + ' ' + secondValueMeasureType;
-    } else {
-      textValue = value;
-    }
 
     return (
       <Animated.View style={[
@@ -697,7 +681,7 @@ export default class Slider extends PureComponent {
         { transform: [{ translateX: secondThumbLeft }, { translateY: 0 }] }
       ]}
       >
-        <Text style={defaultStyles.valueTextView}>{textValue}</Text>
+        <Text style={defaultStyles.valueTextView}>{secondValueMeasureType}</Text>
       </Animated.View>
     );
   }
