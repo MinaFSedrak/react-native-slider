@@ -413,7 +413,7 @@ export default class Slider extends PureComponent {
       style,
       trackStyle,
       thumbStyle,
-      ...otherProps,
+      ...otherProps
     } = props;
 
     return otherProps;
